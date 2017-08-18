@@ -3,7 +3,7 @@ namespace pixi_atlas {
 
 	const INF = 1 << 20;
 
-	class AtlasNode<T> {
+	export class AtlasNode<T> {
 		public childs: Array<AtlasNode<T>> = [];
 		public rect = new Rectangle(0, 0, INF, INF);
 		public data: T = null;

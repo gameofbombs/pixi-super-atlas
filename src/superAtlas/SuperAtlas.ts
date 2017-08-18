@@ -1,10 +1,11 @@
 namespace pixi_atlas {
+	const RGBA = WebGLRenderingContext.RGBA;
+	import BaseTexture = PIXI.BaseTexture;
+
 	export class SuperAtlasEntry {
 		baseTexture: BaseTexture;
 		superAtlas: SuperAtlas;
 	}
-
-	const RGBA = WebGLRenderingContext.RGBA;
 
 	export class SuperAtlas implements ITextureResource {
 		static MAX_SIZE = 2048;
