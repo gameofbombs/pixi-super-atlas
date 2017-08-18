@@ -1,12 +1,19 @@
 namespace pixi_atlas {
+	export class SuperAtlasEntry {
+		baseTexture: BaseTexture;
+		superAtlas: SuperAtlas;
+	}
+
+	const RGBA = WebGLRenderingContext.RGBA;
+
 	export class SuperAtlas implements ITextureResource {
 		static MAX_SIZE = 2048;
 
 		baseTexture: PIXI.BaseTexture = null;
-		format: number = WebGLRenderingContext.RGBA;
+		format: number = RGBA;
 		width: number = 2048;
 		height: number = 2048;
-		autoResize: boolean = false;
+		options: AtlasOptions;
 
 		onTextureUpload(renderer: PIXI.WebGLRenderer,
 		                baseTexture: PIXI.BaseTexture,
@@ -24,11 +31,13 @@ namespace pixi_atlas {
 			baseTexture.height = this.height;
 		}
 
-		static create(width: number, height?: number, format: number = WebGLRenderingContext.RGBA) {
+		static create(options: IAtlasOptions) {
+			let opt = options instanceof AtlasOptions ? options : new AtlasOptions(options);
 			let atlas = new SuperAtlas();
-			atlas.width = width;
-			atlas.height = height || width;
-			atlas.format = format;
+			atlas.options = opt;
+			atlas.width = opt.width;
+			atlas.height = opt.height;
+			atlas.format = opt.format;
 			atlas.onTextureNew(new PIXI.BaseTexture());
 
 			return atlas;

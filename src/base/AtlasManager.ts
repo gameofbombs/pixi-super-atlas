@@ -41,7 +41,7 @@ module pixi_atlas {
 			const boundTextures: Array<BaseTexture> = this.renderer.boundTextures as any;
 
 			// if the location is undefined then this may have been called by n event.
-			// this being the case the texture may already be bound to a slot. As a texture can only be bound once
+			// this being the cas e the texture may already be bound to a slot. As a texture can only be bound once
 			// we need to find its current location if it exists.
 			if (location === undefined) {
 				location = 0;

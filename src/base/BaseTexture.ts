@@ -1,5 +1,4 @@
 namespace pixi_atlas {
-	export class BaseTexture {
-
-	}
+	// export class BaseTexture {
+	// }
 }
