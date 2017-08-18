@@ -3,18 +3,21 @@ namespace pixi_atlas {
 	import Texture = PIXI.Texture;
 	import WebGLRenderer = PIXI.WebGLRenderer;
 
-	interface AtlasEntry {
+	export interface AtlasEntry {
 		baseTexture: BaseTexture;
+		atlas: IAtlas;
+		currentNode: AtlasNode<AtlasEntry>;
+		currentAtlas: SuperAtlas;
 	}
 
-	interface IRepackResult {
+	export interface IRepackResult {
 		// goodMap: { [key: string]: AtlasNode<AtlasEntry> };
 		failed: Array<AtlasEntry>;
 
 		apply();
 	}
 
-	interface IAtlas {
+	export interface IAtlas {
 		add(texture: BaseTexture | Texture, swapCache ?: boolean): TextureRegion;
 
 		addHash(textures: { [key: string]: Texture }, swapCache ?: boolean): { [key: string]: TextureRegion };

@@ -2,6 +2,8 @@ namespace pixi_atlas {
 	import Rectangle = PIXI.Rectangle;
 
 	const INF = 1 << 20;
+	
+	//TODO: add some padding
 
 	export class AtlasNode<T> {
 		public childs: Array<AtlasNode<T>> = [];
