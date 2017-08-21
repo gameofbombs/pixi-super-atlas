@@ -3,13 +3,22 @@ namespace pixi_atlas {
 	import Texture = PIXI.Texture;
 	import WebGLRenderer = PIXI.WebGLRenderer;
 
-	export interface AtlasEntry {
+	export class AtlasEntry {
 		baseTexture: BaseTexture;
 		atlas: IAtlas;
 		currentNode: AtlasNode<AtlasEntry>;
 		currentAtlas: SuperAtlas;
 		width: number;
 		height: number;
+
+		regions: Array<TextureRegion> = [];
+
+		constructor(atlas: IAtlas, baseTexture: BaseTexture) {
+			this.baseTexture = baseTexture;
+			this.width = baseTexture.width;
+			this.height = baseTexture.height;
+			this.atlas = atlas;
+		}
 	}
 
 	export interface IRepackResult {
