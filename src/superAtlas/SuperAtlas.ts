@@ -8,9 +8,11 @@ namespace pixi_atlas {
 	}
 
 	export class AtlasTree implements IRepackResult {
-		failed: AtlasEntry[];
+		failed: Array<AtlasEntry> = [];
 
 		root: AtlasNode<AtlasEntry>;
+
+		good: Array<AtlasEntry> = [];
 
 		hash: { [key: number]: AtlasNode<AtlasEntry> } = {};
 
@@ -29,10 +31,6 @@ namespace pixi_atlas {
 		options: AtlasOptions;
 
 		tree: AtlasTree;
-
-		all: Array<AtlasEntry> = [];
-		hash: { [key: number]: AtlasEntry } = {};
-		failed: Array<AtlasEntry> = [];
 
 		onTextureUpload(renderer: PIXI.WebGLRenderer,
 		                baseTexture: PIXI.BaseTexture,
@@ -77,6 +75,15 @@ namespace pixi_atlas {
 			throw new Error("Method not implemented.");
 		}
 
+		insert(entry: AtlasEntry) {
+			if (this.tryInsert(entry)) return;
+			this.tree.failed.push(entry);
+		}
+
+		remove(entry: AtlasEntry) {
+
+		}
+
 		tryInsert(entry: AtlasEntry): boolean {
 			let node = this.tree.root.insert(this.width, this.height,
 				entry.width, entry.height, entry);
@@ -85,7 +92,8 @@ namespace pixi_atlas {
 			}
 			entry.currentNode = node;
 			entry.currentAtlas = this;
-			this.hash[entry.baseTexture.uid] = entry;
+			this.tree.hash[entry.baseTexture.uid] = node;
+			this.tree.good.push(entry);
 			return true;
 		}
 
@@ -101,7 +109,12 @@ namespace pixi_atlas {
 		repack(failOnFirst: boolean = false): IRepackResult {
 			let pack = new AtlasTree();
 
-			let all = this.all.slice(0);
+			let all = this.tree.good.slice(0);
+			let failed = this.tree.failed;
+			for (let i = 0; i < failed.length; i++) {
+				all.push(failed[i]);
+			}
+
 			all.sort((a: AtlasEntry, b: AtlasEntry) => {
 				if (b.width == a.width) {
 					return b.height - a.height;
@@ -123,6 +136,11 @@ namespace pixi_atlas {
 				}
 				pack.hash[obj.baseTexture.uid] = node;
 			}
+
+			pack.apply = () => {
+				this.tree.root = pack.root;
+				this.tree.failed = pack.failed.slice(0);
+			};
 			return pack;
 		}
 
