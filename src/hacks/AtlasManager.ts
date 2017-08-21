@@ -1,3 +1,13 @@
+declare module PIXI {
+	interface BaseTexture {
+		uid: number;
+	}
+
+	interface BaseRenderTexture {
+		uid: number;
+	}
+}
+
 module pixi_atlas {
 	export class AtlasManager {
 		/**

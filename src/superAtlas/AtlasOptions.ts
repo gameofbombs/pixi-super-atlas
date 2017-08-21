@@ -5,6 +5,7 @@ namespace pixi_atlas {
 		loadFactor ?: number;
 		repackBeforeResize ?: boolean;
 		repackAfterResize ?: boolean;
+		algoTreeResize?: boolean;
 		maxSize ?: number;
 		format ?: number;
 		hasAllFields ?: boolean;
@@ -16,6 +17,7 @@ namespace pixi_atlas {
 		loadFactor = 0.95;
 		repackBeforeResize = true;
 		repackAfterResize = true;
+		algoTreeResize = false;
 		maxSize = 0;
 		format = WebGLRenderingContext.RGBA;
 
@@ -38,6 +40,9 @@ namespace pixi_atlas {
 			}
 			if (src.repackBeforeResize !== undefined) {
 				this.repackBeforeResize = src.repackBeforeResize;
+			}
+			if (src.algoTreeResize !== undefined) {
+				this.algoTreeResize = src.algoTreeResize;
 			}
 			return this;
 		}

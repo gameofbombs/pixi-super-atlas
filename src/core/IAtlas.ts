@@ -8,6 +8,8 @@ namespace pixi_atlas {
 		atlas: IAtlas;
 		currentNode: AtlasNode<AtlasEntry>;
 		currentAtlas: SuperAtlas;
+		width: number;
+		height: number;
 	}
 
 	export interface IRepackResult {
