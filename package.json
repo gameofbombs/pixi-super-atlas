@@ -6,8 +6,8 @@
   "contributors": [
     "Ivan Popelyshev <ivan.popelyshev@gmail.com>"
   ],
-  "main": "./bin/pixi-projection.js",
-  "types": "./bin/pixi-projection.d.ts",
+  "main": "./dist/pixi-projection.js",
+  "types": "./dist/pixi-projection.d.ts",
   "homepage": "https://github.com/gameofbombs/pixi-super-atlas",
   "bugs": {
     "url": "https://github.com/gameofbombs/pixi-super-atlas/issues"
@@ -18,7 +18,7 @@
     "url": "https://github.com/gameofbombs/pixi-super-atlas.git"
   },
   "scripts": {
-    "cleanup": "rimraf bin && mkdirp bin",
+    "cleanup": "rimraf dist && mkdirp dist",
     "prestart": "yarn cleanup",
     "start": "parallelshell \"yarn watch\"",
     "watch": "tsc -w",
