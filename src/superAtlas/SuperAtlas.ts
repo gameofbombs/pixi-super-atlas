@@ -30,6 +30,8 @@ namespace pixi_atlas {
 		height: number = 2048;
 		options: AtlasOptions;
 
+		all: { [key: number]: AtlasEntry } = {};
+
 		tree: AtlasTree;
 
 		onTextureUpload(renderer: PIXI.WebGLRenderer,
@@ -68,7 +70,32 @@ namespace pixi_atlas {
 		}
 
 		add(texture: BaseTexture | PIXI.Texture, swapCache?: boolean): TextureRegion {
-			throw new Error("Method not implemented.");
+			let baseTexture: PIXI.BaseTexture;
+			let arg: PIXI.Texture;
+			if (texture instanceof BaseTexture) {
+				baseTexture = texture as BaseTexture;
+				arg = new PIXI.Texture(baseTexture);
+			} else {
+				baseTexture = texture.baseTexture;
+				arg = texture;
+			}
+
+			let entry = this.all[baseTexture.uid];
+			if (!entry) {
+				entry = new AtlasEntry(this, baseTexture);
+				this.insert(entry);
+			}
+
+			let region = new TextureRegion(entry, arg);
+			if (swapCache) {
+				let ids = texture.textureCacheIds;
+				for (let i = 0; i < ids.length; i++) {
+					PIXI.utils.TextureCache[ids[i]] = region;
+				}
+			}
+
+			entry.regions.push(region);
+			return region;
 		}
 
 		addHash(textures: { [key: string]: PIXI.Texture; }, swapCache?: boolean): { [key: string]: TextureRegion; } {
@@ -78,10 +105,19 @@ namespace pixi_atlas {
 		insert(entry: AtlasEntry) {
 			if (this.tryInsert(entry)) return;
 			this.tree.failed.push(entry);
+			this.all[entry.baseTexture.uid] = entry;
 		}
 
 		remove(entry: AtlasEntry) {
-
+			if (entry.currentNode == null) {
+				let failed = this.tree.failed;
+				let ind = failed.indexOf(entry);
+				if (ind >= 0) {
+					failed.splice(ind, 1);
+				}
+			} else {
+				throw new Error("Cant remove packed texture");
+			}
 		}
 
 		tryInsert(entry: AtlasEntry): boolean {
@@ -92,6 +128,7 @@ namespace pixi_atlas {
 			}
 			entry.currentNode = node;
 			entry.currentAtlas = this;
+			this.all[entry.baseTexture.uid] = entry;
 			this.tree.hash[entry.baseTexture.uid] = node;
 			this.tree.good.push(entry);
 			return true;
