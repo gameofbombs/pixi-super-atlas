@@ -99,7 +99,11 @@ namespace pixi_atlas {
 		}
 
 		addHash(textures: { [key: string]: PIXI.Texture; }, swapCache?: boolean): { [key: string]: TextureRegion; } {
-			throw new Error("Method not implemented.");
+			let hash: { [key: string]: TextureRegion; } = {};
+			for (let key in textures) {
+				hash[key] = this.add(textures[key], swapCache);
+			}
+			return hash;
 		}
 
 		insert(entry: AtlasEntry) {
