@@ -11,6 +11,8 @@ namespace pixi_atlas {
 		width: number;
 		height: number;
 
+		nodeUpdateID: number = 0;
+
 		regions: Array<TextureRegion> = [];
 
 		constructor(atlas: IAtlas, baseTexture: BaseTexture) {

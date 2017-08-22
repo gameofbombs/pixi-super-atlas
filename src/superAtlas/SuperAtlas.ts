@@ -1,6 +1,7 @@
 namespace pixi_atlas {
 	const RGBA = WebGLRenderingContext.RGBA;
 	import BaseTexture = PIXI.BaseTexture;
+	import Rectangle = PIXI.Rectangle;
 
 	export class SuperAtlasEntry {
 		baseTexture: BaseTexture;
@@ -33,14 +34,6 @@ namespace pixi_atlas {
 		all: { [key: number]: AtlasEntry } = {};
 
 		tree: AtlasTree;
-
-		onTextureUpload(renderer: PIXI.WebGLRenderer,
-		                baseTexture: PIXI.BaseTexture,
-		                glTexture: PIXI.glCore.GLTexture): boolean {
-			baseTexture.mipmap = false;
-
-			return true;
-		}
 
 		onTextureNew(baseTexture: PIXI.BaseTexture) {
 			this.baseTexture = baseTexture;
@@ -130,6 +123,7 @@ namespace pixi_atlas {
 			if (!node) {
 				return false;
 			}
+			entry.nodeUpdateID = ++this.baseTexture._updateID;
 			entry.currentNode = node;
 			entry.currentAtlas = this;
 			this.all[entry.baseTexture.uid] = entry;
@@ -191,5 +185,51 @@ namespace pixi_atlas {
 			renderer.textureManager.updateTexture(this.baseTexture);
 			throw new Error("Method not implemented.");
 		}
+
+		imageTextureRebuildUpdateID: number = 0;
+
+		onTextureUpload(renderer: PIXI.WebGLRenderer, baseTexture: PIXI.BaseTexture, tex: PIXI.glCore.GLTexture): boolean {
+			tex.bind();
+			const imgTexture = this.baseTexture;
+			imgTexture.mipmap = false;
+			const gl = tex.gl;
+			tex.premultiplyAlpha = imgTexture.premultipliedAlpha;
+			gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, imgTexture.premultipliedAlpha);
+
+			const uploadAll = tex._updateID < this.imageTextureRebuildUpdateID;
+			if (uploadAll) {
+				gl.texImage2D(
+					gl.TEXTURE_2D, //GLenum target
+					0, //GLint level
+					gl.RGBA, //GLint internalformat
+					imgTexture.width, //GLsizei width
+					imgTexture.height, //GLsizei height
+					0, //GLint border // should be 0, it is borderColor
+					gl.RGBA, //GLenum format
+					gl.UNSIGNED_BYTE,//GLenum type
+					null //ArrayBufferView? pixels
+				);
+			}
+
+			for (let key in this.tree.hash) {
+				let node = this.tree.hash[key];
+				let entry = node.data;
+				// if (!obj.isLoaded) continue;
+				if (!uploadAll && tex._updateID >= entry.nodeUpdateID) continue;
+
+				let rect: Rectangle = node.rect;
+				gl.texSubImage2D(
+					gl.TEXTURE_2D, //GLenum target
+					0, //GLint level
+					rect.left, // GLint xoffset
+					rect.top, // GLint yoffset
+					gl.RGBA, //GLenum format
+					gl.UNSIGNED_BYTE,//GLenum type
+					entry.baseTexture.source // TexImageSource source
+				);
+			}
+			return true;
+		}
+
 	}
 }
