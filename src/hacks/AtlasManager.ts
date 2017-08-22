@@ -1,6 +1,4 @@
 module pixi_atlas {
-	PIXI.glCore.GLTexture.prototype._updateID = -1;
-
 	export class AtlasManager {
 		/**
 		 * A reference to the current renderer

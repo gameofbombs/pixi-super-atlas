@@ -16,6 +16,8 @@ declare module PIXI.glCore {
 }
 
 module pixi_atlas {
+	PIXI.glCore.GLTexture.prototype._updateID = -1;
+	PIXI.BaseTexture.prototype._updateID = 0;
 
 	function bindTexture(texture: any,
 	                     location?: number, forceLocation?: boolean): number {
