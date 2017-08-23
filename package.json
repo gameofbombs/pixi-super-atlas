@@ -29,7 +29,7 @@
     "patch-dts": "node scripts/patch-dts.js",
     "concat": "node scripts/concat.js",
 
-    "sandbox:vanillajs": "yarn shx -- cp dist/pixi-super-atlas.js sandbox/build/vanillajs/pixi-super-atlas.js && tsc -p sandbox/tsconfig.vanilla.json",
+    "sandbox:vanillajs": "yarn shx -- cp dist/pixi-super-atlas.js* sandbox/build/vanillajs/ && tsc -p sandbox/tsconfig.vanilla.json",
     "sandbox:all": "yarn build && yarn sandbox:vanillajs",
     "sandbox:www": "yarn static-html-server -- -p 9995 -r sandbox/build"
   },

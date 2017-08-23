@@ -80,7 +80,6 @@ module pixi_atlas {
 				else {
 					glTexture = new PIXI.glCore.GLTexture(this.gl, null, null, null, null);
 					glTexture.bind(location);
-					glTexture.upload(texture.source);
 				}
 				texture._glTextures[this.renderer.CONTEXT_UID] = glTexture;
 
@@ -92,8 +91,9 @@ module pixi_atlas {
 
 			glTexture.premultiplyAlpha = texture.premultipliedAlpha;
 
-			if (!texture.resource ||
-				!texture.resource.onTextureUpload(this.renderer, texture, glTexture)) {
+			if (!texture.resource) {
+				glTexture.upload(texture.source);
+			} else if (!texture.resource.onTextureUpload(this.renderer, texture, glTexture)) {
 				glTexture.uploadData(null, texture.realWidth, texture.realHeight);
 			}
 

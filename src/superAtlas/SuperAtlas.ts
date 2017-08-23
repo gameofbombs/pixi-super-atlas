@@ -33,10 +33,11 @@ namespace pixi_atlas {
 
 		all: { [key: number]: AtlasEntry } = {};
 
-		tree: AtlasTree;
+		tree: AtlasTree = null;
 
 		onTextureNew(baseTexture: PIXI.BaseTexture) {
 			this.baseTexture = baseTexture;
+			baseTexture.resource = this;
 			baseTexture.width = this.width;
 			baseTexture.height = this.height;
 			baseTexture.hasLoaded = true;
@@ -51,6 +52,9 @@ namespace pixi_atlas {
 			atlas.height = opt.height;
 			atlas.format = opt.format;
 			atlas.onTextureNew(new PIXI.BaseTexture());
+
+			atlas.tree = new AtlasTree();
+			atlas.tree.root = atlas.createAtlasRoot();
 
 			return atlas;
 		}

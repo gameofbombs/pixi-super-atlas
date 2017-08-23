@@ -11,7 +11,7 @@ namespace pixi_atlas {
 		return function (resource: PIXI.loaders.Resource, next: () => any) {
 			let atlas = resource.metadata.runtimeAtlas as IAtlas;
 			if (!atlas) {
-				return;
+				return next();
 			}
 
 			if (resource.type === Resource.TYPE.IMAGE) {
