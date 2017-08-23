@@ -18,12 +18,11 @@ module pixi_atlas {
 			this.renderer = renderer;
 
 			renderer.on('context', this.onContextChange);
-
-			this.renderer.textureManager.updateTexture = this.updateTexture;
 		}
 
 		onContextChange = (gl: WebGLRenderingContext) => {
 			this.gl = gl;
+			this.renderer.textureManager.updateTexture = this.updateTexture;
 		};
 
 		//TODO: make boundTextures faster?
