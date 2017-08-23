@@ -3,6 +3,7 @@ declare module PIXI {
 		uid: number;
 		_updateID: number;
 		resource: pixi_atlas.ITextureResource
+		forceUploadStyle: boolean;
 	}
 
 	interface BaseRenderTexture {
@@ -20,6 +21,7 @@ module pixi_atlas {
 	PIXI.glCore.GLTexture.prototype._updateID = -1;
 	PIXI.BaseTexture.prototype._updateID = 0;
 	PIXI.BaseTexture.prototype.resource = null;
+	PIXI.BaseTexture.prototype.forceUploadStyle = true;
 
 	function bindTexture(texture: any,
 	                     location?: number, forceLocation?: boolean): number {
@@ -47,6 +49,9 @@ module pixi_atlas {
 
 		const gl = this.gl;
 		const glTexture = texture._glTextures[this.CONTEXT_UID];
+		if (texture === this.emptyTextures[location]) {
+			glTexture._updateID = 0;
+		}
 
 		if (!glTexture || glTexture._updateID < texture._updateID) {
 			// this will also bind the texture..
