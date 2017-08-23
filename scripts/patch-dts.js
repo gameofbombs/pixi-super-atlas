@@ -6,7 +6,7 @@ fs.readFile(dtsPath, 'utf8', function (err,data) {
   if (err) {
     return console.log(err);
   }
-  var result = data.replace(/namespace pixi_atlas/g, 'module PIXI.atlas').replace(/pixi_atlas/, 'PIXI.atlas');
+  var result = data.replace(/namespace pixi_atlas/g, 'module PIXI.atlas').replace(/pixi_atlas/g, 'PIXI.atlas');
 
   fs.writeFile(dtsPath, result, 'utf8', function (err) {
     if (err) return console.log(err);
