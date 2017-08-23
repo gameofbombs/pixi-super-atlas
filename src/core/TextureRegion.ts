@@ -13,11 +13,11 @@ namespace pixi_atlas {
 		entry: AtlasEntry;
 
 		constructor(entry: AtlasEntry, texture: PIXI.Texture = new Texture(entry.baseTexture)) {
-			super(entry.currentAtlas.baseTexture,
-				new Rectangle(texture.frame.x + entry.currentNode.rect.x,
+			super(entry.currentAtlas ? entry.currentAtlas.baseTexture : texture.baseTexture,
+				entry.currentNode ? new Rectangle(texture.frame.x + entry.currentNode.rect.x,
 					texture.frame.y + entry.currentNode.rect.y,
 					texture.frame.width,
-					texture.frame.height),
+					texture.frame.height) : texture.frame.clone(),
 				texture.orig,
 				texture.trim,
 				texture.rotate
@@ -29,11 +29,20 @@ namespace pixi_atlas {
 		updateFrame() {
 			const texture = this.proxied;
 			const entry = this.entry;
-			this.frame.x = texture.frame.x + entry.currentNode.rect.x;
-			this.frame.y = texture.frame.y + entry.currentNode.rect.y;
+			const frame = this._frame;
+			if (entry.currentNode) {
+				this.baseTexture = entry.baseTexture;
+				frame.x = texture.frame.x + entry.currentNode.rect.x;
+				frame.y = texture.frame.y + entry.currentNode.rect.y;
+			} else {
+				this.baseTexture = texture.baseTexture;
+				frame.x = texture.frame.x;
+				frame.y = texture.frame.y;
+			}
 
-			this.frame.width = texture.frame.width;
-			this.frame.height = texture.frame.height;
+			frame.width = texture.frame.width;
+			frame.height = texture.frame.height;
+			this._updateUvs();
 		}
 	}
 }

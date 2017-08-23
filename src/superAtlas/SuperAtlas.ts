@@ -172,13 +172,26 @@ namespace pixi_atlas {
 					if (failOnFirst) {
 						return pack;
 					}
+				} else {
+					pack.hash[obj.baseTexture.uid] = node;
 				}
-				pack.hash[obj.baseTexture.uid] = node;
 			}
 
 			pack.apply = () => {
+				//TODO: full copy?
 				this.tree.root = pack.root;
 				this.tree.failed = pack.failed.slice(0);
+				this.tree.hash = pack.hash;
+
+				for (let obj of all) {
+					obj.currentNode = pack.hash[obj.baseTexture.uid] || null;
+					obj.currentAtlas = obj.currentNode ? this : null;
+					for (let region of obj.regions) {
+						region.updateFrame();
+					}
+				}
+
+				this.imageTextureRebuildUpdateID++;
 			};
 			return pack;
 		}
