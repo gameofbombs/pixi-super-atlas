@@ -62,7 +62,7 @@ module pixi_atlas {
 				data: new Uint8Array(data.data)
 			});
 			if (i < levels) {
-				context.drawImage(tmpCanvas, 0, h1, w, h, 0, h1, w / 2, h / 2);
+				context.drawImage(tmpCanvas, 0, h1, w, h, 0, h1 + h, w / 2, h / 2);
 				h1 += h;
 			}
 		}

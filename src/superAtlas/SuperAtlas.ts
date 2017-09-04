@@ -226,18 +226,33 @@ namespace pixi_atlas {
 
 			const uploadAll = tex._updateID < this.imageTextureRebuildUpdateID;
 			if (uploadAll) {
-				for (let lvl = 0; lvl <= levels; lvl++) {
-					gl.texImage2D(
-						gl.TEXTURE_2D, //GLenum target
-						lvl, //GLint level
-						gl.RGBA, //GLint internalformat
-						imgTexture.width >> lvl, //GLsizei width
-						imgTexture.height >> lvl, //GLsizei height
-						0, //GLint border // should be 0, it is borderColor
-						gl.RGBA, //GLenum format
-						gl.UNSIGNED_BYTE,//GLenum type
-						null //ArrayBufferView? pixels
-					);
+				gl.texImage2D(
+					gl.TEXTURE_2D, //GLenum target
+					0, //GLint level
+					gl.RGBA, //GLint internalformat
+					imgTexture.width, //GLsizei width
+					imgTexture.height, //GLsizei height
+					0, //GLint border // should be 0, it is borderColor
+					gl.RGBA, //GLenum format
+					gl.UNSIGNED_BYTE,//GLenum type
+					null //ArrayBufferView? pixels
+				);
+
+				if (tex.mipmap) {
+					//testing
+					for (let lvl = 1; (imgTexture.width >> lvl) > 0; lvl++) {
+						gl.texImage2D(
+							gl.TEXTURE_2D, //GLenum target
+							lvl, //GLint level
+							gl.RGBA, //GLint internalformat
+							imgTexture.width >> lvl, //GLsizei width
+							imgTexture.height >> lvl, //GLsizei height
+							0, //GLint border // should be 0, it is borderColor
+							gl.RGBA, //GLenum format
+							gl.UNSIGNED_BYTE,//GLenum type
+							null //ArrayBufferView? pixels
+						);
+					}
 				}
 			}
 

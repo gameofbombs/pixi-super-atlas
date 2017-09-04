@@ -9,7 +9,7 @@ let loader = new PIXI.loaders.Loader("https://pixijs.github.io/examples/required
 
 let levels = 4;
 
-let atlas = PIXI.atlas.SuperAtlas.create({width: 1024, height: 512, mipLevels: levels});
+let atlas = PIXI.atlas.SuperAtlas.create({width: 1024, height: 1024, mipLevels: levels});
 
 let options = {metadata: {runtimeAtlas: atlas}};
 
@@ -29,7 +29,7 @@ loader.add('spritesheet', 'monsters.json', options)
 		pack.apply();
 
 		let y = 0;
-		for (let i = 0; i < levels; i++) {
+		for (let i = 1; i <= levels; i++) {
 			let spr = new PIXI.Sprite(new PIXI.Texture(atlas.baseTexture));
 			spr.scale.set(1.0 / (1 << i));
 			spr.position.y = y;
