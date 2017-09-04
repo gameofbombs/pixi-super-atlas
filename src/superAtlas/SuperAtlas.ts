@@ -80,6 +80,15 @@ namespace pixi_atlas {
 			let entry = this.all[baseTexture.uid];
 			if (!entry) {
 				entry = new AtlasEntry(this, baseTexture);
+
+				// pad it
+				let p1 = this.options.padding, p2 = (1 << this.options.mipLevels);
+				let w1 = entry.width + p1, h1 = entry.height + p1;
+				let w2 = entry.width + (p2 - entry.width % p2) % p2;
+				let h2 = entry.height + (p2 - entry.height % p2) % p2;
+				entry.width = Math.max(w1, w2);
+				entry.height = Math.max(h1, h2);
+
 				this.insert(entry);
 			}
 
@@ -208,29 +217,34 @@ namespace pixi_atlas {
 		onTextureUpload(renderer: PIXI.WebGLRenderer, baseTexture: PIXI.BaseTexture, tex: PIXI.glCore.GLTexture): boolean {
 			tex.bind();
 			const imgTexture = this.baseTexture;
-			imgTexture.mipmap = false;
 			const gl = tex.gl;
+			const levels = this.options.mipLevels;
+
+			tex.mipmap = levels > 0;
 			tex.premultiplyAlpha = imgTexture.premultipliedAlpha;
 			gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, imgTexture.premultipliedAlpha);
 
 			const uploadAll = tex._updateID < this.imageTextureRebuildUpdateID;
 			if (uploadAll) {
-				gl.texImage2D(
-					gl.TEXTURE_2D, //GLenum target
-					0, //GLint level
-					gl.RGBA, //GLint internalformat
-					imgTexture.width, //GLsizei width
-					imgTexture.height, //GLsizei height
-					0, //GLint border // should be 0, it is borderColor
-					gl.RGBA, //GLenum format
-					gl.UNSIGNED_BYTE,//GLenum type
-					null //ArrayBufferView? pixels
-				);
+				for (let lvl = 0; lvl <= levels; lvl++) {
+					gl.texImage2D(
+						gl.TEXTURE_2D, //GLenum target
+						lvl, //GLint level
+						gl.RGBA, //GLint internalformat
+						imgTexture.width >> lvl, //GLsizei width
+						imgTexture.height >> lvl, //GLsizei height
+						0, //GLint border // should be 0, it is borderColor
+						gl.RGBA, //GLenum format
+						gl.UNSIGNED_BYTE,//GLenum type
+						null //ArrayBufferView? pixels
+					);
+				}
 			}
 
 			for (let key in this.tree.hash) {
 				let node = this.tree.hash[key];
 				let entry = node.data;
+				let entryTex = entry.baseTexture;
 				// if (!obj.isLoaded) continue;
 				if (!uploadAll && tex._updateID >= entry.nodeUpdateID) continue;
 
@@ -244,9 +258,29 @@ namespace pixi_atlas {
 					gl.UNSIGNED_BYTE,//GLenum type
 					entry.baseTexture.source // TexImageSource source
 				);
+
+				if (levels > 0) {
+					if (!entryTex._mips || entryTex._mips.length < levels) {
+						entryTex.generateMips(levels);
+					}
+					const mips = entryTex._mips;
+					for (let lvl = 1; lvl <= levels; lvl++) {
+						const mip = mips[lvl - 1];
+						gl.texSubImage2D(
+							gl.TEXTURE_2D, //GLenum target
+							lvl, //GLint level
+							rect.left >> lvl, // GLint xoffset
+							rect.top >> lvl, // GLint yoffset
+							mip.width,
+							mip.height,
+							gl.RGBA, //GLenum format
+							gl.UNSIGNED_BYTE,//GLenum type
+							mip.data
+						);
+					}
+				}
 			}
 			return true;
 		}
-
 	}
 }

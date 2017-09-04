@@ -9,6 +9,8 @@ namespace pixi_atlas {
 		maxSize ?: number;
 		format ?: number;
 		hasAllFields ?: boolean;
+		mipLevels ?: number;
+		padding ?: number;
 	}
 
 	export class AtlasOptions implements IAtlasOptions {
@@ -19,6 +21,9 @@ namespace pixi_atlas {
 		repackAfterResize = true;
 		algoTreeResize = false;
 		maxSize = 0;
+		mipLevels = 0;
+		padding = 0;
+
 		format = WebGLRenderingContext.RGBA;
 
 		static MAX_SIZE = 0;
@@ -35,6 +40,8 @@ namespace pixi_atlas {
 			this.maxSize = src.maxSize || AtlasOptions.MAX_SIZE;
 			this.format = src.format || this.format;
 			this.loadFactor = src.loadFactor || this.loadFactor;
+			this.padding = src.padding || this.padding;
+			this.mipLevels = src.mipLevels || this.mipLevels;
 			if (src.repackAfterResize !== undefined) {
 				this.repackAfterResize = src.repackAfterResize;
 			}

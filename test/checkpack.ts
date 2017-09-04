@@ -1,14 +1,18 @@
 import 'pixi.js';
 import '../dist/pixi-super-atlas.js';
 
-let app = new PIXI.Application({autoStart: false, width: 800, height: 800});
+let app = new PIXI.Application({autoStart: false, width: 800, height: 1024});
 
 document.body.appendChild(app.view);
 
 let loader = new PIXI.loaders.Loader("https://pixijs.github.io/examples/required/assets/");
-let atlas = PIXI.atlas.SuperAtlas.create({width: 768, height:768});
+
+let levels = 4;
+
+let atlas = PIXI.atlas.SuperAtlas.create({width: 1024, height: 512, mipLevels: levels});
 
 let options = {metadata: {runtimeAtlas: atlas}};
+
 
 loader.add('spritesheet', 'monsters.json', options)
 	.add('spinObj_01', 'spinObj_01.png', options)
@@ -20,10 +24,18 @@ loader.add('spritesheet', 'monsters.json', options)
 	.add('spinObj_07', 'spinObj_07.png', options)
 	.add('spinObj_08', 'spinObj_08.png', options)
 	.add('panda', 'panda.png', options)
-	.load(()  => {
-		let x = atlas.repack();
-		x.apply();
-		let spr = new PIXI.Sprite(new PIXI.Texture(atlas.baseTexture));
-		app.stage.addChild(spr);
+	.load(() => {
+		let pack = atlas.repack();
+		pack.apply();
+
+		let y = 0;
+		for (let i = 0; i < levels; i++) {
+			let spr = new PIXI.Sprite(new PIXI.Texture(atlas.baseTexture));
+			spr.scale.set(1.0 / (1 << i));
+			spr.position.y = y;
+			app.stage.addChild(spr);
+
+			y += Math.ceil(atlas.height * spr.scale.y);
+		}
 		app.start();
 	});
