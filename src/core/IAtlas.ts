@@ -27,7 +27,7 @@ namespace pixi_atlas {
 		// goodMap: { [key: string]: AtlasNode<AtlasEntry> };
 		failed: Array<AtlasEntry>;
 
-		apply();
+		apply(): void;
 	}
 
 	export interface IAtlas {

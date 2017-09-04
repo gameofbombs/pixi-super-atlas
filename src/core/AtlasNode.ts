@@ -10,7 +10,7 @@ namespace pixi_atlas {
 		public rect = new Rectangle(0, 0, INF, INF);
 		public data: T = null;
 
-		public insert(atlasWidth, atlasHeight: number,
+		public insert(atlasWidth: number, atlasHeight: number,
 		              width: number, height: number, data: T): AtlasNode<T> {
 			if (this.childs.length > 0) {
 				const newNode: AtlasNode<T> = this.childs[0].insert(

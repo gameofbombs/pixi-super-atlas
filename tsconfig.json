@@ -2,7 +2,7 @@
     "compilerOptions": {
         "target": "es5",
         "module": "none",
-        "outFile": "dist/pixi-super-atlas-with-namespace.js",
+        "outFile": "dist/pixi-super-atlas.js",
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
         "sourceMap": true,
@@ -22,7 +22,6 @@
     ],
     "exclude": [
         "node_modules/**/*",
-        "compilation.ts",
-        "bin"
+        "dist"
     ]
 }
