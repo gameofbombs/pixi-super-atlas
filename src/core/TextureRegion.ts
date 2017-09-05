@@ -31,7 +31,7 @@ namespace pixi_atlas {
 			const entry = this.entry;
 			const frame = this._frame;
 			if (entry.currentNode) {
-				this.baseTexture = entry.baseTexture;
+				this.baseTexture = entry.currentAtlas.baseTexture;
 				frame.x = texture.frame.x + entry.currentNode.rect.x;
 				frame.y = texture.frame.y + entry.currentNode.rect.y;
 			} else {
