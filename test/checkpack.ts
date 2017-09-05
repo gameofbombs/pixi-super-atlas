@@ -1,18 +1,16 @@
 import 'pixi.js';
 import '../dist/pixi-super-atlas.js';
 
-let app = new PIXI.Application({autoStart: false, width: 800, height: 1024});
+//@../node_modules/pixi.js/dist/pixi.min.js
+//@../dist/pixi-super-atlas.js
 
+let app = new PIXI.Application({autoStart: false, width: 800, height: 1024});
 document.body.appendChild(app.view);
 
 let loader = new PIXI.loaders.Loader("https://pixijs.github.io/examples/required/assets/");
-
 let levels = 4;
-
 let atlas = PIXI.atlas.SuperAtlas.create({width: 1024, height: 1024, mipLevels: levels});
-
 let options = {metadata: {runtimeAtlas: atlas}};
-
 
 loader.add('spritesheet', 'monsters.json', options)
 	.add('spinObj_01', 'spinObj_01.png', options)
