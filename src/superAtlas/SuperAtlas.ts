@@ -84,10 +84,8 @@ namespace pixi_atlas {
 				// pad it
 				let p1 = this.options.padding, p2 = (1 << this.options.mipLevels);
 				let w1 = entry.width + p1, h1 = entry.height + p1;
-				let w2 = entry.width + (p2 - entry.width % p2) % p2;
-				let h2 = entry.height + (p2 - entry.height % p2) % p2;
-				entry.width = Math.max(w1, w2);
-				entry.height = Math.max(h1, h2);
+				entry.width = w1 + (p2 - entry.width % p2) % p2;
+				entry.height = h1 + (p2 - entry.height % p2) % p2;
 
 				this.insert(entry);
 			}

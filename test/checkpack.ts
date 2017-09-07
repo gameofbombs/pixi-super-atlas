@@ -5,11 +5,15 @@ import '../dist/pixi-super-atlas.js';
 //@../dist/pixi-super-atlas.js
 
 let app = new PIXI.Application({autoStart: false, width: 800, height: 1024});
+
 document.body.appendChild(app.view);
 
 let loader = new PIXI.loaders.Loader("https://pixijs.github.io/examples/required/assets/");
-let levels = 4;
+
+let levels = 5;
+
 let atlas = PIXI.atlas.SuperAtlas.create({width: 1024, height: 1024, mipLevels: levels});
+
 let options = {metadata: {runtimeAtlas: atlas}};
 
 loader.add('spritesheet', 'monsters.json', options)
@@ -26,9 +30,11 @@ loader.add('spritesheet', 'monsters.json', options)
 		let pack = atlas.repack();
 		pack.apply();
 
+		PIXI.loader.reset();
+
 		let y = 0;
 		for (let i = 1; i <= levels; i++) {
-			let spr = new PIXI.Sprite(new PIXI.Texture(atlas.baseTexture));
+			let spr = PIXI.Sprite.from('spinObj_01');
 			spr.scale.set(1.0 / (1 << i));
 			spr.position.y = y;
 			app.stage.addChild(spr);
