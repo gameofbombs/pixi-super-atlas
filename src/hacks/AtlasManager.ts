@@ -91,11 +91,13 @@ module pixi_atlas {
 
 			glTexture.premultiplyAlpha = texture.premultipliedAlpha;
 
-			if (!texture.resource) {
-				glTexture.upload(texture.source);
-			} else if (!texture.resource.onTextureUpload(this.renderer, texture, glTexture)) {
-				glTexture.uploadData(null, texture.realWidth, texture.realHeight);
-			}
+			if (!isRenderTexture) {
+                if (!texture.resource) {
+                    glTexture.upload(texture.source);
+                } else if (!texture.resource.onTextureUpload(this.renderer, texture, glTexture)) {
+                    glTexture.uploadData(null, texture.realWidth, texture.realHeight);
+                }
+            }
 
 			// lets only update what changes..
 			if (texture.forceUploadStyle) {
